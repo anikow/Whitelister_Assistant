@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 import logging
 from logging.handlers import RotatingFileHandler
 import config
-from database.mongodb import fetch_members_with_role
+from database.mongodb import perform_database_operations
 from database.sql import connect_to_sql
 from role_manager import RoleManager
 from pymongo import errors as mongo_errors
@@ -25,7 +25,7 @@ initialize_database()
 # Initialize RoleManager
 role_manager = RoleManager(config.GUILD_ID)
 
-def handle_seeding_points(members_data):
+def handle_seeding_points(members_data, reward_points):
     try:
 
         timers = role_manager.load_timers()
@@ -44,12 +44,12 @@ def handle_seeding_points(members_data):
             existing_timer = next((t for t in timers if t[0] == discord_user_id), None)
             expiration_time = datetime.fromisoformat(existing_timer[2]) if existing_timer else None
 
-            if seeding_points > config.CHECK_POINTS and config.SEED_ROLE_ID not in user_roles:
+            if seeding_points > reward_points and config.SEED_ROLE_ID not in user_roles:
                 users_to_assign.append(discord_user_id)
                 role_manager.add_role(discord_user_id, config.SEED_ROLE_ID)
                 if existing_timer:
                     role_manager.cancel_timer(discord_user_id)
-            elif seeding_points <= config.CHECK_POINTS and config.SEED_ROLE_ID in user_roles:
+            elif seeding_points <= reward_points and config.SEED_ROLE_ID in user_roles:
                 if expiration_time and datetime.now() > expiration_time:
                     role_manager.remove_role(discord_user_id, config.SEED_ROLE_ID)
                     logger.debug(f"Timer for user {discord_user_id} has expired, role removed.")
@@ -88,7 +88,7 @@ def handle_hours_played(members_data):
             steamID,
             SUM(TIMESTAMPDIFF(SECOND, joinTime, leaveTime)) / 3600 AS hours_played
         FROM
-            your_table_name  -- Replace with your actual table name
+            ActivityTracker_PlayerSession
         WHERE
             joinTime >= %s
         GROUP BY
@@ -143,14 +143,19 @@ def handle_hours_played(members_data):
             logger.info('Connection to SQL database closed')
 
 def main():
-    # Fetch members with the specified role
-    members_data = fetch_members_with_role()
-    if not members_data:
-        logger.info('No members to process.')
-        return
+
+    # Fetch data from mongodb
+    db_results = perform_database_operations()
+    
+    # Extract variables from the returned dictionary
+    members_data = db_results.get('members', [])
+    reward_points = db_results.get('reward_points', 115)
+
+    logger.info(f'Number of Members: {len(members_data)}')
+    logger.info(f'Points Needed for Reward: {reward_points}')
 
     # Handle seeding points and roles
-    handle_seeding_points(members_data)
+    handle_seeding_points(members_data, reward_points)
 
     # Handle hours played and roles
     handle_hours_played(members_data)
