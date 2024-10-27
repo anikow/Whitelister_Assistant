@@ -88,7 +88,7 @@ def handle_hours_played(members_data):
             steamID,
             SUM(TIMESTAMPDIFF(SECOND, joinTime, leaveTime)) / 3600 AS hours_played
         FROM
-            ActivityTracker_PlayerSession
+            ActivityTracker_PlayerSessions
         WHERE
             joinTime >= %s
         GROUP BY
@@ -110,10 +110,16 @@ def handle_hours_played(members_data):
         users_unchanged = []
 
         for user in members_data:
-            steam_id = user['steamid64']
+            steam_id = user.get('steamid64')
+
+            if not steam_id:
+                logger.debug(f"User {user['discord_user_id']} does not have a linked Steam ID.")
+                continue
+
             discord_user_id = user['discord_user_id']
             user_roles = user.get('discord_roles_ids', [])
             hours_played = steam_hours_map.get(steam_id, 0) # Defaults to 0 if not found on
+
 
             if hours_played >= config.HOURS_THRESHOLD and config.ACTIVITY_ROLE_ID not in user_roles:
                 users_to_assign.append(discord_user_id)
