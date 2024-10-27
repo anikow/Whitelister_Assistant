@@ -38,11 +38,6 @@ This application automates the assignment and removal of Discord roles based on 
 
 2. **Create a Virtual Environment**
 
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows use 'venv\Scripts\activate'
-   ```
-
 3. **Install Dependencies**
 
    ```bash
@@ -54,7 +49,7 @@ This application automates the assignment and removal of Discord roles based on 
     Create a `.env` file in the root directory.
 
     **Example .env**
-    ```bash
+   ```bash
    # MongoDB
    MONGODB_USERNAME=username
    MONGODB_PASSWORD=password
@@ -86,73 +81,17 @@ This application automates the assignment and removal of Discord roles based on 
    SEED_ROLE_ID=123456789123456789
    ACTIVITY_ROLE_ID=123456789123456789
 
-   # Thresholds
-   CHECK_POINTS=10 # Ammount of points needed to gain 100%
-   HOURS_THRESHOLD=10  # Number of hours required in the past week
+   # Number of weeks to consider for hours played
+   HOURS_PLAYED_WEEKS=2
+   HOURS_THRESHOLD=25  # Number of hours required in the past week
 
-   # How often to start main.py
-   TIMER_DURATION=60  # In seconds
+   # Lenghts of whitelist after dropping bellow seed point threshold
+   TIMER_DURATION=500  # In seconds
 
    # Logging 
    LOG_FILE=app.log
    LOG_MAX_BYTES=1000000
-    ```
-
-5. **Create Configuration File**
-
-    Create a `config.py` file in the root directory for additional settings.
-
-    **Example config.py**
-    ```python
-   import os
-   from dotenv import load_dotenv
-
-   # Load environment variables from .env file
-   load_dotenv()
-
-   # MongoDB 
-   MONGODB_USERNAME = os.getenv('MONGODB_USERNAME')
-   MONGODB_PASSWORD = os.getenv('MONGODB_PASSWORD')
-   MONGODB_HOST = os.getenv('MONGODB_HOST')
-   MONGODB_PORT = os.getenv('MONGODB_PORT')
-   MONGODB_URI = f'mongodb://{MONGODB_USERNAME}:{MONGODB_PASSWORD}@{MONGODB_HOST}:{MONGODB_PORT}'
-   DATABASE_NAME = 'admin'
-   COLLECTION_NAME = 'players'
-
-   # Flag to determine if cloning is needed
-   USE_DB_CLONE = os.getenv('USE_DB_CLONE', 'False').lower() == 'true'
-   # Paths for rsync
-   MONGODB_MAIN_DATA_PATH = os.getenv('MONGODB_MAIN_DATA_PATH')
-   MONGODB_CLONE_DATA_PATH = os.getenv('MONGODB_CLONE_DATA_PATH')
-   MONGODB_CLONE_CONTAINER_NAME = os.getenv('MONGODB_CLONE_CONTAINER_NAME')
-
-   # SQL Database 
-   SQL_HOST = os.getenv('SQL_HOST')
-   SQL_PORT = int(os.getenv('SQL_PORT', '3306'))
-   SQL_USERNAME = os.getenv('SQL_USERNAME')
-   SQL_PASSWORD = os.getenv('SQL_PASSWORD')
-   SQL_DATABASE = os.getenv('SQL_DATABASE')
-
-   # API 
-   API_URL = os.getenv('API_URL')
-
-   # Discord 
-   GUILD_ID = os.getenv('GUILD_ID')
-   ROLE_ID = os.getenv('ROLE_ID')  # CI member role
-   SEED_ROLE_ID = os.getenv('SEED_ROLE_ID')  # Test role
-   ACTIVITY_ROLE_ID = os.getenv('ACTIVITY_ROLE_ID')  # Replace with actual role ID
-
-   # SEEDING Thresholds
-   CHECK_POINTS = float(os.getenv('CHECK_POINTS', '78.5'))
-   HOURS_THRESHOLD = float(os.getenv('HOURS_THRESHOLD', '10'))
-
-   # Timer 
-   TIMER_DURATION = int(os.getenv('TIMER_DURATION', '58'))  # In seconds
-
-   # Logging 
-   LOG_FILE = os.getenv('LOG_FILE', 'app.log')
-   LOG_MAX_BYTES = int(os.getenv('LOG_MAX_BYTES', '1000000'))
-   LOG_BACKUP_COUNT = int(os.getenv('LOG_BACKUP_COUNT', '5'))
+   LOG_BACKUP_COUNT=5
     ```
 
 
