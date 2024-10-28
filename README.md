@@ -1,31 +1,30 @@
-# Discord Role Manager
+# Whitelister Assistant
 
 ## Overview
 
-This application automates the assignment and removal of Discord roles based on user activity and criteria such as seeding points and hours played. 
+Whitelister Assistant automates role assignments in Discord based on user activity. It integrates with MongoDB and SQL databases to manage roles by seeding points and hours played, offering a streamlined solution for server role management. 
 
 ## Features
-
-- Assign/remove roles based on seeding points from Whitelister MongoDB.
-- Assign/remove roles based on hours played from SquadJS SQL database.
+- Automatic role assignments/removals based on:
+  - Seeding points from [Whitelister](https://github.com/fantinodavide/Squad_Whitelister).
+  - Hours played tracked by [SquadJS](https://github.com/Team-Silver-Sphere/SquadJS) plugin ActivityTracker.
 
 ## Directory Structure
 
-- `database/`: Handles database connections.
-- `role_manager/`: Manages role assignments and removals.
-- `utils/`: Contains utility functions.
-- `main.py`: Entry point of the application.
-- `config.py`: Configuration variables (not committed to version control).
-- `.env`: Environment variables (not committed to version control).
+- `database/`: Manages database connections.
+- `role_manager/`: Handles role operations.
+- `utils/`: Utility functions.
+- `main.py`: Application entry point.
+- `config.py`: Configuration variables.
 
 ## Setup Instructions
 
 ### Prerequisites
 
 - Python 3.x
-- Whitelister MongoDB instance
+- [Whitelister](https://github.com/fantinodavide/Squad_Whitelister) MongoDB database
 - ActivityTracker plugin for SquadJS
-- Discord Bot API access that allows role management. Might have to rewrite part of `role_manager.py` depending on the bot's api call handling.
+- Discord Bot API access for role management
 
 ### Installation
 
@@ -37,6 +36,11 @@ This application automates the assignment and removal of Discord roles based on 
    ```
 
 2. **Create a Virtual Environment**
+   
+   ```bash
+   python -m venv env
+   source env/bin/activate
+   ```
 
 3. **Install Dependencies**
 
@@ -46,7 +50,7 @@ This application automates the assignment and removal of Discord roles based on 
 
 4. **Set Up Environment Variables**
 
-    Create a `.env` file in the root directory.
+    Create a `.env` file in the root directory and configure it with your MongoDB, SQL, API, and Discord settings.
 
     **Example .env**
    ```bash
@@ -94,4 +98,17 @@ This application automates the assignment and removal of Discord roles based on 
    LOG_BACKUP_COUNT=5
     ```
 
+   ## Usage
 
+   Run the application with:
+   ```bash
+   python3 main.py
+   ```
+   
+   ## Contributing
+
+   Contributions are welcome. Please fork the repository and create a pull request for any enhancements or bug fixes.
+
+   ## License
+   
+   This project is licensed under the MIT License.
