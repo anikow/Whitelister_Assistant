@@ -2,7 +2,7 @@
 
 ## Overview
 
-Whitelister Assistant automates role assignments in Discord based on user activity. It integrates with MongoDB and SQL databases to manage roles by seeding points and hours played, offering a streamlined solution for server role management. 
+Whitelister Assistant automates role assignments in Discord based on user activity. It integrates with MongoDB and SQL databases to manage roles by tracking points and hours played, offering a streamlined solution for monitoring in-game activity and dynamically adding or removing roles on the Discord server. 
 
 ## Features
 - Automatic role assignments/removals based on:
@@ -23,7 +23,7 @@ Whitelister Assistant automates role assignments in Discord based on user activi
 
 - Python 3.x
 - [Whitelister](https://github.com/fantinodavide/Squad_Whitelister) MongoDB database
-- ActivityTracker plugin for SquadJS
+- ActivityTracker plugin for [SquadJS](https://github.com/Team-Silver-Sphere/SquadJS)
 - Discord Bot API access for role management
 
 ### Installation
@@ -107,8 +107,8 @@ Whitelister Assistant automates role assignments in Discord based on user activi
    
    ## Contributing
 
-   Contributions are welcome. Please fork the repository and create a pull request for any enhancements or bug fixes.
+   Contributions are welcome.
 
    ## License
    
-   This project is licensed under the MIT License.
+   This project is licensed under the [MIT License](LICENSE).
