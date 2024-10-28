@@ -32,7 +32,7 @@ Whitelister Assistant automates role assignments in Discord based on user activi
 
    ```bash
    git clone https://github.com/michalniko/Whitelister_Assistant.git
-   cd discord_role_manager
+   cd Whitelister_Assistant
    ```
 
 2. **Create a Virtual Environment**

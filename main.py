@@ -51,7 +51,7 @@ def handle_seeding_points(members_data, reward_points):
                     role_manager.cancel_timer(discord_user_id)
             elif seeding_points <= reward_points and config.SEED_ROLE_ID in user_roles:
                 if expiration_time and datetime.now() > expiration_time:
-                    role_manager.remove_role(discord_user_id, config.SEED_ROLE_ID)
+                    role_manager.remove_role(discord_user_id, config.SEED_ROLE_ID, remove_timer=True)
                     logger.debug(f"Timer for user {discord_user_id} has expired, role removed.")
                     users_removed.append(discord_user_id)
                 elif not existing_timer:
