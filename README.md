@@ -23,7 +23,7 @@ Whitelister Assistant automates role assignments in Discord based on user activi
 
 - Python 3.x
 - [Whitelister](https://github.com/fantinodavide/Squad_Whitelister) MongoDB database
-- ActivityTracker plugin for [SquadJS](https://github.com/Team-Silver-Sphere/SquadJS)
+- [ActivityTracker](https://github.com/anikow/squadjs-activity-tracker) plugin for [SquadJS](https://github.com/Team-Silver-Sphere/SquadJS)
 - Discord Bot API access for role management
 
 ### Installation
