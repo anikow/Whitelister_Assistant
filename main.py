@@ -1,6 +1,9 @@
 import time
 from datetime import datetime, timedelta
 import logging
+import signal
+import sys
+import threading
 from logging.handlers import RotatingFileHandler
 import config
 from database.mongodb import perform_database_operations
@@ -24,6 +27,17 @@ initialize_database()
 
 # Initialize RoleManager
 role_manager = RoleManager(config.GUILD_ID)
+
+# Create a shutdown event
+shutdown_event = threading.Event()
+
+def signal_handler(signum, frame):
+    logger.info(f"Signal {signum} received, shutting down gracefully.")
+    shutdown_event.set()
+
+# Register signal handlers for graceful shutdown
+signal.signal(signal.SIGTERM, signal_handler)
+signal.signal(signal.SIGINT, signal_handler)
 
 def handle_seeding_points(members_data, reward_points):
     try:
@@ -86,7 +100,7 @@ def handle_hours_played(members_data):
         query = """
         SELECT
             steamID,
-            SUM(TIMESTAMPDIFF(SECOND, joinTime, leaveTime)) / 3600 AS hours_played
+            IFNULL(SUM(TIMESTAMPDIFF(SECOND, joinTime, leaveTime)) / 3600, 0) AS hours_played
         FROM
             ActivityTracker_PlayerSessions
         WHERE
@@ -167,9 +181,13 @@ def main():
     handle_hours_played(members_data)
 
 if __name__ == '__main__':
+
     try:
-        while True:
+        while not shutdown_event.is_set():
             main()
-            time.sleep(60)  # Run every 1 minute
-    except KeyboardInterrupt:
-        logger.info('Program interrupted by user.')
+            # Wait for 180 seconds or until shutdown_event is set
+            shutdown_event.wait(timeout=config.SLEEP_DURATION)
+    except Exception as e:
+        logger.error(f'An error occurred: {e}')
+    finally:
+        logger.info('Program is exiting.')

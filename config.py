@@ -43,7 +43,9 @@ HOURS_THRESHOLD = float(os.getenv('HOURS_THRESHOLD'))
 HOURS_PLAYED_WEEKS = int(os.getenv('HOURS_PLAYED_WEEKS'))
 
 # Timer 
-TIMER_DURATION = int(os.getenv('TIMER_DURATION'))
+TIMER_DURATION = int(os.getenv('TIMER_DURATION', 1209600))  # Default to 2 weeks
+
+SLEEP_DURATION = int(os.getenv('SLEEP_DURATION', 60)) # Default to 1 minute
 
 # Logging 
 LOG_FILE = os.getenv('LOG_FILE', 'app.log')
