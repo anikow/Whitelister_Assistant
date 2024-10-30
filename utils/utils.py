@@ -2,6 +2,7 @@ import sqlite3
 import subprocess
 import logging
 import os
+import re
 import config
 
 logger = logging.getLogger(__name__)
@@ -32,6 +33,15 @@ def initialize_database():
     )
     ''')
     logger.info('Timers table ensured to exist in timers.db.')
+    
+def is_valid_container_name(name):
+    # Allow alphanumeric characters, underscores, and hyphens
+    pattern = re.compile(r'^[a-zA-Z0-9_-]+$')
+    return pattern.match(name) is not None
+
+def is_valid_path(path):
+    # Check if path is absolute and does not contain '..'
+    return os.path.isabs(path) and '..' not in os.path.normpath(path)
 
 def run_command(command):
     """
@@ -54,6 +64,19 @@ def run_rsync():
     Stops the MongoDB clone container, runs the rsync command to synchronize the MongoDB data from the original to the clone, and then restarts the container.
     """
     container_name = config.MONGODB_CLONE_CONTAINER_NAME
+    main_data_path = config.MONGODB_MAIN_DATA_PATH
+    clone_data_path = config.MONGODB_CLONE_DATA_PATH
+
+    # Validate container name
+    if not is_valid_container_name(container_name):
+        raise ValueError(f"Invalid container name: {container_name}")
+
+    # Validate paths
+    if not is_valid_path(main_data_path):
+        raise ValueError(f"Invalid main data path: {main_data_path}")
+
+    if not is_valid_path(clone_data_path):
+        raise ValueError(f"Invalid clone data path: {clone_data_path}")
 
     # Stop MongoDB Docker container
     logger.info("Stopping MongoDB clone container...")
@@ -65,8 +88,8 @@ def run_rsync():
         result = run_command(
             [
                 'rsync', '-avz', '--delete',
-                f"{config.MONGODB_MAIN_DATA_PATH}/",
-                f"{config.MONGODB_CLONE_DATA_PATH}/"
+                f"{main_data_path}/",
+                f"{clone_data_path}/"
             ]
         )
         logger.debug(f"rsync output:\n{result}")
