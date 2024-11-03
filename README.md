@@ -90,7 +90,9 @@ Whitelister Assistant automates role assignments in Discord based on user activi
    HOURS_THRESHOLD=25  # Number of hours required in the past week
 
    # Lenghts of whitelist after dropping bellow seed point threshold
-   TIMER_DURATION=500  # In seconds
+   TIMER_DURATION=1209600  # 2 weeks in seconds
+
+   SLEEP_DURATION=180 # 3 minutes
 
    # Logging 
    LOG_FILE=app.log
