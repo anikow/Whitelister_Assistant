@@ -21,15 +21,17 @@ class RoleManager:
         self.cancel_timer(user_id)
 
     def remove_role(self, user_id, role_id, remove_timer=False):
-        # Retrieve the start time of the timer before removing the role.
-        timer_info = self.get_timer_info(user_id)
-        start_time = timer_info['start_time'] if timer_info else 'No timer found'
         
-        logger.debug(f"Removing role {role_id} from user {user_id} via API client with timestamp {start_time}.")
-        self.api_client.remove_role(config.GUILD_ID, user_id, role_id, start_time)
+        self.api_client.remove_role(config.GUILD_ID, user_id, role_id)
 
-        # Delete the timer from the database only if remove_timer is True
         if remove_timer:
+            # Retrieve the start time of the timer before removing the role.
+            timer_info = self.get_timer_info(user_id)   
+            start_time = timer_info['start_time'] if timer_info else 'No timer found'
+
+            logger.debug(f"Removing role {role_id} from user {user_id} via API client with timestamp {start_time}.")
+            self.api_client.remove_role(config.GUILD_ID, user_id, role_id, start_time)
+            # Delete the timer from the database only if remove_timer is True
             execute_db_query('DELETE FROM timers WHERE discord_user_id = ?', (user_id,))
 
     def start_timer(self, user_id, role_id, duration=None):
