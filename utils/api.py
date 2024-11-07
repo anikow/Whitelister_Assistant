@@ -43,7 +43,7 @@ class CustomAPIClient(APIClient):
                 except Exception as e:
                     logger.error(f"Error adding role to user {user_id}: {e}")
 
-    def remove_role(self, guild_id, user_id, role_id, timestamp):
+    def remove_role(self, guild_id, user_id, role_id, timestamp=None):
         with self.api_lock:
             with self.limiter:
                 logger.debug(f"Removing role {role_id} from user {user_id}")
@@ -51,8 +51,10 @@ class CustomAPIClient(APIClient):
                     "guildId": guild_id,
                     "userId": user_id,
                     "roleId": role_id,
-                    "timestamp": timestamp
                 }
+                if timestamp is not None:
+                    data["timestamp"] = timestamp
+                    logger.debug(f"Including timestamp: {timestamp}")
                 try:
                     response = requests.post(f"{self.api_url}/remove-role", json=data)
                     if response.status_code == 200:
